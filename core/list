@@ -1,0 +1,22 @@
+#!/bin/bash
+
+sandbox::list() {
+  local sandboxs=$(ls $PLUGIN_SANDBOX_SANDBOXS_DIR)
+  if [ -z "$sandboxs" ]; then
+    echo "No available sandboxs"
+    return
+  fi
+
+  echo "Available sandboxs ($(array::length ${sandboxs[@]})):"
+
+  local index=1
+  for sandbox in $sandboxs; do
+    config::load_file $PLUGIN_SANDBOX_SANDBOXS_DIR/$sandbox/mod
+
+    printf "%2s. %-12s - %s\n" "$index" "$sandbox" "$DESCRIPTION"
+
+    index=$(( index + 1 ))
+  done
+}
+
+export -f sandbox::list

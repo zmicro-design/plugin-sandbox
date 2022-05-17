@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PLUGIN_SANDBOX_NAME=go
+
+export PLUGIN_SANDBOX_IMAGE=golang:1.18-alpine

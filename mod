@@ -1,0 +1,8 @@
+PLUGIN_NAME=Sandbox
+PLUGIN_VERSION=v0.0.0
+PLUGIN_DESCRIPTION="Sandbox Plugin"
+
+#DEPENDENCIES=(
+#  "^docker@latest" # ^ => package
+#  "^docker-compose@v1"
+#)

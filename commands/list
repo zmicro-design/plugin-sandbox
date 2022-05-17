@@ -1,0 +1,23 @@
+#!/bin/bash
+
+help() {
+  echo "List all available sandbox"
+  echo ""
+  echo "Usage:"
+  echo "  zmicro sandbox list [options...]"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  sandbox::list $@
+}
+
+run() {
+  core $@
+}
+
+run $@

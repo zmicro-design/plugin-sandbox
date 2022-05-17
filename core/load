@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sandbox::load() {
+  local sandbox_config=$sandbox_dir/config
+  cd $sandbox_dir
+
+  if [ -f "$sandbox_config" ]; then
+    config::load_file $sandbox_config
+  fi
+
+  export PLUGIN_SANDBOX_COMMAND=${command:-$PLUGIN_SANDBOX_COMMAND}
+}
+
+export -f sandbox::load

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PLUGIN_SANDBOX_NAME=nodejs
+
+export PLUGIN_SANDBOX_IMAGE=whatwewant/node:v16-2.0.0

@@ -1,0 +1,69 @@
+#!/bin/bash
+
+sandbox::install() {
+  local name=$1
+  local version=$2
+  if [ -z "$name" ]; then
+    log::error "[$(timestamp)][sandbox::install] name is required"
+    exit 1
+  fi
+
+  if [ -z "$version" ]; then
+    version=master
+  fi
+
+  local service_path=$(sandbox::get_path $name)
+  local service_repo_url=$(sandbox::get_repo_url $name)
+  if [ ! -d "$service_path" ]; then
+    curl -I $service_repo_url 2>>/dev/null | head -n 1 | grep 404 >>/dev/null 2>&1
+    if [ "$?" = "0" ]; then
+      log::error "[$(timestamp)][sandbox::install] service ${name} is not available"
+      exit 1
+    fi
+
+    git clone $service_repo_url -b $version $service_path >>$ZMICRO_LOG_COMMON_PATH 2>$error_log
+    if [ "$?" != "0" ]; then
+      log::error "[$(timestamp)][sandbox::install] error $name($version) ..."
+      cat $error_log
+      exit 1
+    fi
+  else
+    cd $service_path
+    local current_tag=$(git describe --tags)
+    if [ "$current_tag" != "$version" ] && [ "$version" != "master" ]; then
+      # git fetch origin $version >> $ZMICRO_LOG_UPDATE_PATH 2>>$ZMICRO_LOG_ERROR_PATH
+      git fetch origin >> $ZMICRO_LOG_UPDATE_PATH 2>$error_log
+      if [ "$?" != "0" ]; then
+        echo "[$(timestamp)][sandbox::install] git fetch error ${name} ..."
+        cat $error_log
+        exit -1
+      fi
+
+      local tag=$version
+      # 1. if tag branch exist, remove it
+      git branch | grep $tag >> /dev/null 2>&1
+      if [ "$?" = "0" ]; then
+        git branch -D $tag >> /dev/null 2>&1
+      fi
+
+      # 2. checkout tag branch
+      git checkout -b $version $tag >> $ZMICRO_LOG_UPDATE_PATH 2>$error_log
+      if [ "$?" != "0" ]; then
+        echo "[$(timestamp)][sandbox::install] git checkout error ${name} - ${tag} ..."
+        cat $error_log
+        exit -1
+      fi
+    fi
+
+    # 3. update tag branch
+    git pull origin $version >> $ZMICRO_LOG_UPDATE_PATH 2>$error_log
+    if [ "$?" != "0" ]; then
+      echo "[$(timestamp)][sandbox::install] git pull error ${name} ..."
+      cat $error_log
+      exit -1
+    fi
+  fi
+}
+
+export -f sandbox::install
+

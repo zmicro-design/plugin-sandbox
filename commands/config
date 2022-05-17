@@ -1,0 +1,35 @@
+#!/bin/bash
+
+help() {
+  echo "List all the sandbox"
+  echo ""
+  echo "Usage:"
+  echo "  zmicro compose list"
+}
+
+core() {
+  if [ "$1" = "" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local typ=$1
+  local command=${@:2}
+  if [ -z "$typ" ]; then
+    log::error "type is required"
+    exit 1
+  fi
+
+  if [ -z "$command" ]; then
+    log::error "command is required"
+    exit 1
+  fi
+
+  sandbox::run "$typ" "$command"
+}
+
+run() {
+  core "$@"
+}
+
+run "$@"

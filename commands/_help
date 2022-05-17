@@ -1,0 +1,13 @@
+#!/bin/bash
+
+help() {
+  echo "
+Usage:
+  list      List all sandboxs
+  ls        Alias of list
+  run       Run command in sandbox
+  config    Show sandbox config
+"
+}
+
+help

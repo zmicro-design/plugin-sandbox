@@ -1,0 +1,45 @@
+#!/bin/bash
+
+help() {
+  echo "Run in sandbox"
+  echo ""
+  echo "Usage:"
+  echo "  zmicro sandbox run <type> <command>"
+  echo ""
+  echo "Examples:"
+  echo "  zmicro sandbox run nodejs \"node examples/nodejs/index.js\""
+  echo "  zmicro sandbox run go \"go examples/go/main.go\""
+  echo "  zmicro sandbox run python \"python examples/python/main.py\""
+  echo "  zmicro sandbox run php \"php examples/php/main.php\""
+  echo "  zmicro sandbox run java \"java examples/java/main.java\""
+  echo "  zmicro sandbox run ruby \"ruby examples/ruby/main.rb\""
+  echo "  zmicro sandbox run perl \"perl examples/perl/main.pl\""
+  echo "  zmicro sandbox run bash \"bash examples/bash/main.sh\""
+}
+
+core() {
+  if [ "$1" = "" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local typ=$1
+  local command=${@:2}
+  if [ -z "$typ" ]; then
+    log::error "type is required"
+    exit 1
+  fi
+
+  if [ -z "$command" ]; then
+    log::error "command is required"
+    exit 1
+  fi
+
+  sandbox::run "$typ" "$command"
+}
+
+run() {
+  core "$@"
+}
+
+run "$@"

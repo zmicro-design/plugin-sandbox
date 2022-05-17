@@ -1,0 +1,13 @@
+#!/bin/bash
+
+sandbox::get_path() {
+  local name=$1
+  echo "$PLUGIN_SANDBOX_SANDBOXS_DIR/$name"
+}
+
+sandbox::get_repo_url() {
+  local name=$1
+  echo "${PLUGIN_SANDBOX_REPO_PREFIX}${name}"
+}
+
+export -f sandbox::get_path
