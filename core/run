@@ -16,6 +16,7 @@ sandbox::run() {
   local sandbox_dir="$PLUGIN_SANDBOX_SANDBOXS_DIR/$typ"
   if [ ! -d "$sandbox_dir" ]; then
     log::error "[sandbox::run] unsupport sandbox ($typ)"
+    exit 1
   fi
 
   sandbox::load "$typ" "$command"
