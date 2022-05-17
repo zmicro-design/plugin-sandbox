@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export PLUGIN_SANDBOX_NAME=go
+
+export PLUGIN_SANDBOX_IMAGE=whatwewant/zmicro:v1.16.14
+

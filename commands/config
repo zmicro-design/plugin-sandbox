@@ -14,18 +14,12 @@ core() {
   fi
 
   local typ=$1
-  local command=${@:2}
   if [ -z "$typ" ]; then
     log::error "type is required"
     exit 1
   fi
 
-  if [ -z "$command" ]; then
-    log::error "command is required"
-    exit 1
-  fi
-
-  sandbox::run "$typ" "$command"
+  sandbox::config "$typ" 
 }
 
 run() {

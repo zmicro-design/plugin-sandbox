@@ -23,7 +23,7 @@ sandbox::run() {
   # sandbox::prepare "$typ"
 
   cd $PLUGIN_SANDBOX_COMPOSE_DIR
-  $DOCKER_COMPOSE config app
+  $DOCKER_COMPOSE run app
 }
 
 export -f sandbox::run
