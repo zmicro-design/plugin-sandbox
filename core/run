@@ -24,6 +24,10 @@ sandbox::run() {
   # sandbox::prepare "$typ"
 
   cd $PLUGIN_SANDBOX_COMPOSE_DIR
+  if [ -n "$DEBUG" ]; then
+    $DOCKER_COMPOSE config
+  fi
+
   $DOCKER_COMPOSE run app
 }
 

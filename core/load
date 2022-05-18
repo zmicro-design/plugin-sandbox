@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sandbox::load() {
+  local typ=$1
   local sandbox_config=$sandbox_dir/config
   cd $sandbox_dir
 
@@ -9,6 +10,8 @@ sandbox::load() {
   fi
 
   export PLUGIN_SANDBOX_COMMAND=${command:-$PLUGIN_SANDBOX_COMMAND}
+  export PLUGIN_SANDBOX_RUNNER_ID=$(os::uuid)
+  export PLUGIN_SANDBOX_RUNNER_CONTAINER="sandbox_${typ}_${PLUGIN_SANDBOX_RUNNER_ID}"
 }
 
 export -f sandbox::load
