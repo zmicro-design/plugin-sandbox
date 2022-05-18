@@ -2,12 +2,22 @@
 
 sandbox::load() {
   local typ=$1
-  local sandbox_config=$sandbox_dir/config
-  cd $sandbox_dir
 
+  # config::export $PLUGIN_SANDBOX_MOD
+  # @TODO
+  config::load_file $PLUGIN_SANDBOX_MOD
+  export PLUGIN_NAME=$PLUGIN_NAME
+  export PLUGIN_VERSION=$PLUGIN_VERSION
+  export PLUGIN_DESCRIPTION=$PLUGIN_DESCRIPTION
+  
+
+  local sandbox_dir="$PLUGIN_SANDBOX_SANDBOXS_DIR/$typ"
+  local sandbox_config=$sandbox_dir/config
   if [ -f "$sandbox_config" ]; then
     config::load_file $sandbox_config
   fi
+
+  # cd $sandbox_dir
 
   export PLUGIN_SANDBOX_COMMAND=${command:-$PLUGIN_SANDBOX_COMMAND}
   export PLUGIN_SANDBOX_RUNNER_ID=$(os::uuid)
