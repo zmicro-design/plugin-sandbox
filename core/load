@@ -2,6 +2,7 @@
 
 sandbox::load() {
   local typ=$1
+  local command=$2
 
   # config::export $PLUGIN_SANDBOX_MOD
   # @TODO

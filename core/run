@@ -28,7 +28,7 @@ sandbox::run() {
     $DOCKER_COMPOSE config
   fi
 
-  $DOCKER_COMPOSE run app
+  $DOCKER_COMPOSE run app # "$command"
 }
 
 export -f sandbox::run
