@@ -10,4 +10,17 @@ sandbox::get_repo_url() {
   echo "${PLUGIN_SANDBOX_REPO_PREFIX}${name}"
 }
 
+sandbox::is_image_exists() {
+  local name=$1
+  local tag=$2
+  curl --silent -f --head -lL https://hub.docker.com/v2/repositories/$name/tags/$tag/ > /dev/null
+  if [ "$?" = "0"  ]; then
+    echo "true"
+  else
+    echo "false"
+  fi
+}
+
 export -f sandbox::get_path
+export -f sandbox::get_repo_url
+export -f sandbox::is_image_exists

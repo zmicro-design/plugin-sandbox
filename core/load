@@ -2,7 +2,8 @@
 
 sandbox::load() {
   local typ=$1
-  local command=$2
+  local version=$2
+  local command=$3
 
   # config::export $PLUGIN_SANDBOX_MOD
   # @TODO
@@ -20,9 +21,23 @@ sandbox::load() {
 
   # cd $sandbox_dir
 
+  export PLUGIN_SANDBOX_NAME=$typ
+  export PLUGIN_SANDBOX_VERSION=$version
+
+  if [ -n "$PLUGIN_SANDBOX_VERSION" ] && [ "$PLUGIN_SANDBOX_VERSION" != "latest" ]; then
+    export PLUGIN_SANDBOX_IMAGE_VERSION=${PLUGIN_SANDBOX_VERSION}
+  fi
+
+  export PLUGIN_SANDBOX_IMAGE=${PLUGIN_SANDBOX_IMAGE_NAME}:${PLUGIN_SANDBOX_IMAGE_VERSION}
   export PLUGIN_SANDBOX_COMMAND=${command:-$PLUGIN_SANDBOX_COMMAND}
   export PLUGIN_SANDBOX_RUNNER_ID=$(os::uuid)
   export PLUGIN_SANDBOX_RUNNER_CONTAINER="sandbox_${typ}_${PLUGIN_SANDBOX_RUNNER_ID}"
+
+  # check image is exist
+  if [ "$(sandbox::is_image_exists $PLUGIN_SANDBOX_IMAGE_NAME $PLUGIN_SANDBOX_IMAGE_VERSION)" = "false" ]; then
+    log::error "[sandbox::load] sandbox (${PLUGIN_SANDBOX_NAME}) image ($PLUGIN_SANDBOX_IMAGE) not found"
+    exit 1
+  fi
 }
 
 export -f sandbox::load

@@ -2,6 +2,7 @@
 
 sandbox::run() {
   local typ=$1
+  local version=latest
   local command=$2
   if [ -z "$typ" ]; then
     log::error "type is required"
@@ -13,14 +14,20 @@ sandbox::run() {
     exit 1
   fi
 
+  # sandbox::run nodejs:v12 "npm run build"
+  # here nodejs use v12
+  if [ "$(string::has : $typ)" = "true" ]; then
+    version=$(echo $typ | awk -F ":" '{print $2}')
+    typ=$(echo $typ | awk -F ":" '{print $1}')
+  fi
+
   local sandbox_dir="$PLUGIN_SANDBOX_SANDBOXS_DIR/$typ"
   if [ ! -d "$sandbox_dir" ]; then
     log::error "[sandbox::run] unsupport sandbox ($typ)"
     exit 1
   fi
 
-  sandbox::load "$typ" "$command"
-
+  sandbox::load "$typ" "$version" "$command"
   # sandbox::prepare "$typ"
 
   cd $PLUGIN_SANDBOX_COMPOSE_DIR

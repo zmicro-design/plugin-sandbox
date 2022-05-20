@@ -2,9 +2,16 @@
 
 sandbox::config() {
   local typ=$1
+  local version=latest
   if [ -z "$typ" ]; then
     log::error "type is required"
     exit 1
+  fi
+
+  # sandbox::run nodejs:v12 "npm run build"
+  # here nodejs use v12
+  if [ "$(string::has : $typ)" = "true" ]; then
+    version=$(echo $type | awk -F ":" '{print $2}')
   fi
 
   local command="placeholder"

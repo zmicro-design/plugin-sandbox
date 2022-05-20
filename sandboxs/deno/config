@@ -2,4 +2,5 @@
 
 export PLUGIN_SANDBOX_NAME=deno
 
-export PLUGIN_SANDBOX_IMAGE=denoland/deno:alpine-1.21.3
+export PLUGIN_SANDBOX_IMAGE_NAME=denoland/deno
+export PLUGIN_SANDBOX_IMAGE_VERSION=alpine-1.21.3
