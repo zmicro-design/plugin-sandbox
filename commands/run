@@ -4,11 +4,21 @@ help() {
   echo "Run in sandbox"
   echo ""
   echo "Usage:"
-  echo "  zmicro sandbox run <type> <command>"
+  echo "  zmicro sandbox run <type> [command]"
+  echo ""
+  echo "Options:"
+  echo "  -e, --envfile string       Set environment file"
+  echo "  -i, --image string         Specify custom docker image, env: PLUGIN_SANDBOX_IMAGE"
+  echo "      --name string          Assign a name to the container"
+  echo "  -u, --user string          Run as specified username or uid"
+  echo "  -v, --volume stringArray   Bind mount a volume"
+  echo "  -w, --workdir string       Working directory inside the container"
   echo ""
   echo "    type - sandbox type, such as: nodejs, or nodejs:v14"
   echo ""
   echo "Examples:"
+  echo "  zmicro sandbox run zmicro"
+  echo "  zmicro sandbox run nodejs"
   echo "  zmicro sandbox run nodejs \"node examples/nodejs/index.js\""
   echo "  zmicro sandbox run nodejs:v14 \"node examples/nodejs/index.js\""
   echo "  zmicro sandbox run go \"go examples/go/main.go\""
@@ -26,15 +36,81 @@ core() {
     exit 0
   fi
 
-  local typ=$1
-  local command=${@:2}
-  if [ -z "$typ" ]; then
-    log::error "type is required"
-    exit 1
+  if [ -z "$DOCKER_COMPOSE" ]; then
+    log::info "[$(timestamp)] docker-compose missing, installing ..."
+    zmicro package install docker-compose
+
+    export DOCKER_COMPOSE=$(which docker-compose)
   fi
 
-  if [ -z "$command" ]; then
-    log::error "command is required"
+  if [ -z "$DOCKER_COMPOSE" ] || [ ! -f "$DOCKER_COMPOSE" ]; then
+    log::error "[$(timestamp)] docker-compose still not found @BUG"
+    return 1
+  fi
+
+  local typ=""
+  local command=""
+
+  local args=""
+  while [[ $# -gt 0 ]]; do
+    local key=$1
+    local value=$2
+    case $key in
+    -h | --help)
+      help
+      exit 0
+      ;;
+    -e | --env | --envfile)
+      export PLUGIN_SANDBOX_ENVFILE=$value
+      shift
+      shift
+      ;;
+    --name)
+      export PLUGIN_SANDBOX_RUNNER_CONTAINER=$value
+      shift
+      shift
+      ;;
+    -u | --user)
+      export PLUGIN_SANDBOX_USER=$value
+      shift
+      shift
+      ;;
+    -v | --volume)
+      PLUGIN_SANDBOX_CONTEXT=$value
+      shift
+      shift
+      ;;
+    -w | --workdir)
+      export PLUGIN_SANDBOX_WORKDIR=$value
+      shift
+      shift
+      ;;
+    -i | --image)
+      # image=$value
+      export PLUGIN_SANDBOX_IMAGE=$value
+      shift
+      shift
+      ;;
+    *)
+      if [ "$(string::match $key ^-)" = "true" ]; then
+        echo "ERROR: unknown parameter \"$key\""
+        help
+        exit 1
+      fi
+
+      if [ -z "$typ" ]; then
+        typ=$key
+      else
+        command="$command $key"
+      fi
+
+      shift
+      ;;
+    esac
+  done
+
+  if [ -z "$typ" ]; then
+    log::error "type is required"
     exit 1
   fi
 

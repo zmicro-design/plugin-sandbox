@@ -4,14 +4,16 @@ sandbox::run() {
   local typ=$1
   local version=latest
   local command=$2
+  local args=$3
   if [ -z "$typ" ]; then
     log::error "type is required"
     exit 1
   fi
 
   if [ -z "$command" ]; then
-    log::error "command is required"
-    exit 1
+    # log::error "command is required"
+    # exit 1
+    command="sh"
   fi
 
   # sandbox::run nodejs:v12 "npm run build"
@@ -35,7 +37,10 @@ sandbox::run() {
     $DOCKER_COMPOSE config
   fi
 
-  $DOCKER_COMPOSE run app # "$command"
+  log::debug "run => $DOCKER_COMPOSE run app \"$command\""
+  $DOCKER_COMPOSE run app "$command"
+
+  # $DOCKER_COMPOSE down
 }
 
 export -f sandbox::run

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+sandbox::create() {
+  local typ=$1
+  local shell=$2
+  sandbox::run "$typ" "$shell"
+}
+
+export -f sandbox::create
