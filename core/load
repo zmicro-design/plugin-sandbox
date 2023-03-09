@@ -38,6 +38,11 @@ sandbox::load() {
   export PLUGIN_SANDBOX_COMMAND=${command:-$PLUGIN_SANDBOX_COMMAND}
   export PLUGIN_SANDBOX_RUNNER_ID=$(os::uuid)
   export PLUGIN_SANDBOX_RUNNER_CONTAINER="sandbox_${typ}_${PLUGIN_SANDBOX_RUNNER_ID}"
+  export PLUGIN_SANDBOX_RUNNER_PORT=${PLUGIN_SANDBOX_RUNNER_PORT:-$PORT}
+
+  if [ -z "$PLUGIN_SANDBOX_RUNNER_PORT" ]; then
+    PLUGIN_SANDBOX_RUNNER_PORT="8024"
+  fi
 
   # check image is exist
   if [ "$(sandbox::is_image_exists $PLUGIN_SANDBOX_IMAGE_NAME $PLUGIN_SANDBOX_IMAGE_VERSION)" = "false" ]; then

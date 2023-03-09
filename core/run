@@ -37,10 +37,20 @@ sandbox::run() {
     $DOCKER_COMPOSE config
   fi
 
-  log::debug "run => $DOCKER_COMPOSE run app \"$command\""
-  $DOCKER_COMPOSE run app "$command"
+  # log::debug "run => $DOCKER_COMPOSE run app \"$command\""
+  # $DOCKER_COMPOSE run app "$command"
 
-  # $DOCKER_COMPOSE down
+  local tmp_error=$(os::tmp_file)
+  $DOCKER_COMPOSE up -d >>/dev/null 2>$tmp_error
+  if [ "$?" != "0" ]; then
+    log::error "[$(timestamp)] failed to start sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"
+    cat $tmp_error
+    return 1
+  fi
+
+  $DOCKER_COMPOSE exec app "$command"
+
+  $DOCKER_COMPOSE down
 }
 
 export -f sandbox::run

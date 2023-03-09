@@ -10,6 +10,7 @@ help() {
   echo "  -e, --envfile string       Set environment file"
   echo "  -i, --image string         Specify custom docker image, env: PLUGIN_SANDBOX_IMAGE"
   echo "      --name string          Assign a name to the container"
+  echo "  -p, --port                 Assign a public port, env: PORT"
   echo "  -s, --shell                Specify custom shell, default: sh"
   echo "  -u, --user string          Run as specified username or uid"
   echo "  -v, --volume stringArray   Bind mount a volume"
@@ -69,6 +70,11 @@ core() {
       ;;
     -n | --name)
       export PLUGIN_SANDBOX_RUNNER_CONTAINER=$value
+      shift
+      shift
+      ;;
+    --port)
+      export PLUGIN_SANDBOX_RUNNER_PORT=$value
       shift
       shift
       ;;

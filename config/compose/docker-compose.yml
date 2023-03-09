@@ -4,6 +4,14 @@ services:
     container_name: ${PLUGIN_SANDBOX_RUNNER_CONTAINER}
     working_dir: ${PLUGIN_SANDBOX_WORKDIR}
     user: ${PLUGIN_SANDBOX_USER:-root}
+    # ports:
+    #   - 0.0.0.0:$PLUGIN_SANDBOX_RUNNER_PORT:$PLUGIN_SANDBOX_RUNNER_PORT
+    ports:
+      - mode: bridge
+        host_ip: 0.0.0.0
+        published: $PLUGIN_SANDBOX_RUNNER_PORT
+        target: $PLUGIN_SANDBOX_RUNNER_PORT
+        protocol: tcp
     environment:
       SANDBOX_CORE_NAME: ${PLUGIN_NAME}
       SANDBOX_CORE_VERSION: ${PLUGIN_VERSION}
@@ -15,13 +23,18 @@ services:
       SANDBOX_RUNNER_COMMAND: ${PLUGIN_SANDBOX_COMMAND}
       SANDBOX_RUNNER_ID: ${PLUGIN_SANDBOX_RUNNER_ID}
       SANDBOX_RUNNER_CONTAINER: ${PLUGIN_SANDBOX_RUNNER_CONTAINER}
+      SANDBOX_RUNNER_PORT: ${PLUGIN_SANDBOX_RUNNER_PORT}
+      #
+      PORT: $PLUGIN_SANDBOX_RUNNER_PORT
+      #
     # env_file:
     #   - "${PLUGIN_SANDBOX_ENVFILE}"
-    command: ${PLUGIN_SANDBOX_COMMAND}
+    # command: ${PLUGIN_SANDBOX_COMMAND}
+    command: sleep infinity
     volumes:
       - ${PLUGIN_SANDBOX_CONTEXT}:${PLUGIN_SANDBOX_WORKDIR}
 
-networks:
-  default:
-    external: true
-    name: compose-ingress
+# networks:
+#   default:
+#     external: true
+#     name: compose-ingress
