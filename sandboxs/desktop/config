@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PLUGIN_SANDBOX_NAME=desktop
+export PLUGIN_SANDBOX_IMAGE_NAME=whatwewant/desktop
+export PLUGIN_SANDBOX_IMAGE_VERSION=v1

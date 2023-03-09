@@ -10,6 +10,7 @@ help() {
   echo "  -e, --envfile string       Set environment file"
   echo "  -i, --image string         Specify custom docker image, env: PLUGIN_SANDBOX_IMAGE"
   echo "      --name string          Assign a name to the container"
+  echo "  -s, --shell                Specify custom shell, default: sh"
   echo "  -u, --user string          Run as specified username or uid"
   echo "  -v, --volume stringArray   Bind mount a volume"
   echo "  -w, --workdir string       Working directory inside the container"
@@ -50,6 +51,7 @@ core() {
 
   local typ=""
   local command=""
+  local shell=""
 
   local args=""
   while [[ $# -gt 0 ]]; do
@@ -65,8 +67,13 @@ core() {
       shift
       shift
       ;;
-    --name)
+    -n | --name)
       export PLUGIN_SANDBOX_RUNNER_CONTAINER=$value
+      shift
+      shift
+      ;;
+    -s | --shell)
+      shell=$value
       shift
       shift
       ;;
@@ -108,6 +115,10 @@ core() {
       ;;
     esac
   done
+
+  if [ -z "$command" ] && [ -n "$shell" ]; then
+    command=$shell
+  fi
 
   if [ -z "$typ" ]; then
     log::error "type is required"

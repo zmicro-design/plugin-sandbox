@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PLUGIN_SANDBOX_NAME=alpine
+export PLUGIN_SANDBOX_IMAGE_NAME=whatwewant/alpine
+export PLUGIN_SANDBOX_IMAGE_VERSION=v3.17-1
