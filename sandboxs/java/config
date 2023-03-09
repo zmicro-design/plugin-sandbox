@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export PLUGIN_SANDBOX_NAME=java
+
+export PLUGIN_SANDBOX_IMAGE_NAME=whatwewant/builder-java
+export PLUGIN_SANDBOX_IMAGE_VERSION=v11-1
