@@ -3,3 +3,7 @@
 export PLUGIN_SANDBOX_NAME=centos
 export PLUGIN_SANDBOX_IMAGE_NAME=whatwewant/centos
 export PLUGIN_SANDBOX_IMAGE_VERSION=v8-1
+
+if [ "$CENTOS_VERSION" = "7" ]; then
+  export PLUGIN_SANDBOX_IMAGE_VERSION=v7-1
+fi
