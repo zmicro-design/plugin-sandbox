@@ -30,26 +30,35 @@ sandbox::run() {
   fi
 
   sandbox::load "$typ" "$version" "$command"
+
   # sandbox::prepare "$typ"
 
   cd $PLUGIN_SANDBOX_COMPOSE_DIR
-  if [ -n "$DEBUG" ]; then
-    $DOCKER_COMPOSE config
-  fi
 
   # log::debug "run => $DOCKER_COMPOSE run app \"$command\""
   # $DOCKER_COMPOSE run app "$command"
 
   local tmp_error=$(os::tmp_file)
-  if [ -f "$PLUGIN_SANDBOX_COMPOSE_DIR/$PLUGIN_SANDBOX_DOCKERFILE_NAME" ]; then
+  if [ -f "$PLUGIN_SANDBOX_CONTEXT/$PLUGIN_SANDBOX_DOCKERFILE_NAME" ]; then
     export PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME=$PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME_FOR_DOCKERFILE
-
-    # need build
-    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME up -d >>/dev/null 2>$tmp_error
-  else
-    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME up -d >>/dev/null 2>$tmp_error
   fi
 
+  if [ -n "$DEBUG" ]; then
+    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME config
+  fi
+
+  if [ "$PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME" != "" ]; then
+    # need build
+    log::info "[$(timestamp)] building fresh ..."
+    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME build >>/dev/null 2>$tmp_error
+    if [ "$?" != "0" ]; then
+      log::error "[$(timestamp)] failed to build sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"
+      cat $tmp_error
+      return 1
+    fi
+  fi
+
+  $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME up -d >>/dev/null 2>$tmp_error
   if [ "$?" != "0" ]; then
     log::error "[$(timestamp)] failed to start sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"
     cat $tmp_error

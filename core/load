@@ -11,7 +11,6 @@ sandbox::load() {
   export PLUGIN_NAME=$PLUGIN_NAME
   export PLUGIN_VERSION=$PLUGIN_VERSION
   export PLUGIN_DESCRIPTION=$PLUGIN_DESCRIPTION
-  
 
   local sandbox_dir="$PLUGIN_SANDBOX_SANDBOXS_DIR/$typ"
   local sandbox_config=$sandbox_dir/config
@@ -38,16 +37,20 @@ sandbox::load() {
   export PLUGIN_SANDBOX_COMMAND=${command:-$PLUGIN_SANDBOX_COMMAND}
   export PLUGIN_SANDBOX_RUNNER_ID=$(os::uuid)
   export PLUGIN_SANDBOX_RUNNER_CONTAINER="sandbox_${typ}_${PLUGIN_SANDBOX_RUNNER_ID}"
-  export PLUGIN_SANDBOX_RUNNER_PORT=${PLUGIN_SANDBOX_RUNNER_PORT:-$PORT}
 
-  if [ -z "$PLUGIN_SANDBOX_RUNNER_PORT" ]; then
-    PLUGIN_SANDBOX_RUNNER_PORT="8024"
-  fi
+  if [ "$typ" != "." ]; then
+    # check image is exist
+    if [ "$(sandbox::is_image_exists $PLUGIN_SANDBOX_IMAGE_NAME $PLUGIN_SANDBOX_IMAGE_VERSION)" = "false" ]; then
+      log::error "[sandbox::load] sandbox (${PLUGIN_SANDBOX_NAME}) image ($PLUGIN_SANDBOX_IMAGE) not found"
+      exit 1
+    fi
+  else
+    if [ ! -f "$PLUGIN_SANDBOX_CONTEXT/$PLUGIN_SANDBOX_DOCKERFILE_NAME" ]; then
+      log::info "[$(timestamp)] local Dockerfile not found ..."
+      return 1
+    fi
 
-  # check image is exist
-  if [ "$(sandbox::is_image_exists $PLUGIN_SANDBOX_IMAGE_NAME $PLUGIN_SANDBOX_IMAGE_VERSION)" = "false" ]; then
-    log::error "[sandbox::load] sandbox (${PLUGIN_SANDBOX_NAME}) image ($PLUGIN_SANDBOX_IMAGE) not found"
-    exit 1
+    log::info "[$(timestamp)] run with local Dockerfile ..."
   fi
 }
 
