@@ -50,7 +50,7 @@ sandbox::run() {
   if [ "$PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME" != "" ]; then
     # need build
     log::info "[$(timestamp)] building fresh ..."
-    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME build >>/dev/null 2>$tmp_error
+    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME build 2>$tmp_error
     if [ "$?" != "0" ]; then
       log::error "[$(timestamp)] failed to build sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"
       cat $tmp_error
