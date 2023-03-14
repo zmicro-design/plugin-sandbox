@@ -41,16 +41,24 @@ sandbox::run() {
   # $DOCKER_COMPOSE run app "$command"
 
   local tmp_error=$(os::tmp_file)
-  $DOCKER_COMPOSE up -d >>/dev/null 2>$tmp_error
+  if [ -f "$PLUGIN_SANDBOX_COMPOSE_DIR/$PLUGIN_SANDBOX_DOCKERFILE_NAME" ]; then
+    export PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME=$PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME_FOR_DOCKERFILE
+
+    # need build
+    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME up -d >>/dev/null 2>$tmp_error
+  else
+    $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME up -d >>/dev/null 2>$tmp_error
+  fi
+
   if [ "$?" != "0" ]; then
     log::error "[$(timestamp)] failed to start sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"
     cat $tmp_error
     return 1
   fi
 
-  $DOCKER_COMPOSE exec app "$command"
+  $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME exec app "$command"
 
-  $DOCKER_COMPOSE down
+  $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME down
 }
 
 export -f sandbox::run
