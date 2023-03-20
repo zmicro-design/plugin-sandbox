@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# run() {
-#   if 
-# }
+run() {
+  local docker_compose_version=$($DOCKER_COMPOSE -v --short)
+  if [ "${docker_compose_version:0:1}" != "2" ]; then
+    log::info "[$(timestamp)] docker-compose need v2, but got ${docker_compose_version}, upgrading ..."
+    zmicro package install docker-compose
+  fi
+}
 
-# run
+run
