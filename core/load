@@ -46,7 +46,7 @@ sandbox::load() {
     fi
   else
     if [ ! -f "$PLUGIN_SANDBOX_CONTEXT/$PLUGIN_SANDBOX_DOCKERFILE_NAME" ]; then
-      log::info "[$(timestamp)] local Dockerfile not found ..."
+      log::error "[$(timestamp)] local Dockerfile not found ..."
       return 1
     fi
 

@@ -30,6 +30,10 @@ sandbox::run() {
   fi
 
   sandbox::load "$typ" "$version" "$command"
+  if [ "$?" != "0" ]; then
+    log::error  "[$(timestamp)] failed to run in sandbox."
+    return 1
+  fi
 
   # sandbox::prepare "$typ"
 
