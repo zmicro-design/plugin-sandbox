@@ -6,6 +6,7 @@ services:
     container_name: ${PLUGIN_SANDBOX_RUNNER_CONTAINER}
     working_dir: ${PLUGIN_SANDBOX_WORKDIR}
     user: ${PLUGIN_SANDBOX_USER:-root}
+    platform: ${PLUGIN_SANDBOX_PLATFORM:-linux/amd64}
     command: sleep infinity
     # ports:
     #   - 0.0.0.0:$PLUGIN_SANDBOX_RUNNER_PORT:$PLUGIN_SANDBOX_RUNNER_PORT
