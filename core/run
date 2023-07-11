@@ -29,6 +29,7 @@ sandbox::run() {
     exit 1
   fi
 
+  log::info "[$(timestamp)] load sandbox ..."
   sandbox::load "$typ" "$version" "$command"
   if [ "$?" != "0" ]; then
     log::error  "[$(timestamp)] failed to run in sandbox."
@@ -37,6 +38,7 @@ sandbox::run() {
 
   # sandbox::prepare "$typ"
 
+  log::info "[$(timestamp)] preparing ..."
   cd $PLUGIN_SANDBOX_COMPOSE_DIR
 
   # log::debug "run => $DOCKER_COMPOSE run app \"$command\""
@@ -62,6 +64,15 @@ sandbox::run() {
     fi
   fi
 
+  log::info "[$(timestamp)] start to download ..."
+  $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME pull # 2>$tmp_error
+  if [ "$?" != "0" ]; then
+    log::error "[$(timestamp)] failed to pull sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"
+    # cat $tmp_error
+    return 1
+  fi
+
+  log::info "[$(timestamp)] start to run ..."
   $DOCKER_COMPOSE -f $PLUGIN_SANDBOX_DOCKER_COMPOSE_FILE_NAME up -d >>/dev/null 2>$tmp_error
   if [ "$?" != "0" ]; then
     log::error "[$(timestamp)] failed to start sandbox: $PLUGIN_SANDBOX_RUNNER_CONTAINER"

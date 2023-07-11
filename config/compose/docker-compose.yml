@@ -34,6 +34,8 @@ services:
     command: sleep infinity
     volumes:
       - ${PLUGIN_SANDBOX_CONTEXT}:${PLUGIN_SANDBOX_WORKDIR}
+    cap_add:
+      - SYS_ADMIN
 
 # networks:
 #   default:

@@ -36,6 +36,8 @@ services:
     # command: ${PLUGIN_SANDBOX_COMMAND}
     volumes:
       - ${PLUGIN_SANDBOX_CONTEXT}:${PLUGIN_SANDBOX_WORKDIR}
+    cap_add:
+      - SYS_ADMIN
 
 # networks:
 #   default:
